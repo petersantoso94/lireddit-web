@@ -5,8 +5,11 @@ import {
   FormLabel,
   Input,
   FormErrorMessage,
+  Button,
+  Box,
 } from "@chakra-ui/core";
 import Wrapper from "../components/Wrapper";
+import InputField from "../components/InputField";
 
 export interface IRegisterProps {}
 
@@ -22,16 +25,19 @@ export default class Register extends React.Component<IRegisterProps> {
         >
           {({ values, handleChange }) => (
             <Form>
-              <FormControl>
-                <FormLabel htmlFor="username">Username</FormLabel>
-                <Input
-                  id="username"
-                  placeholder="username"
-                  value={values.username}
-                  onChange={handleChange}
-                />
-                {/* <FormErrorMessage>{form.errors.name}</FormErrorMessage> */}
-              </FormControl>
+              <InputField
+                name="username"
+                placeholder="Username"
+                label="Username"
+              />
+              <InputField
+                name="password"
+                placeholder="Password"
+                label="Password"
+              />
+              <Box mt={5}>
+                <Button type="submit">Register</Button>
+              </Box>
             </Form>
           )}
         </Formik>
