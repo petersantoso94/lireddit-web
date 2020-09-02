@@ -13,6 +13,7 @@ import {
   LoginMutation,
   MeQuery,
   RegisterMutation,
+  LogoutMutation,
 } from "../generated/graphql";
 
 function UpdateQuery<Result, Query>(
@@ -62,6 +63,21 @@ const client = createClient({
                   return {
                     me: result.register.user,
                   };
+                }
+              }
+            );
+          },
+          logout: (_result, args, cache, info) => {
+            UpdateQuery<LogoutMutation, MeQuery>(
+              cache,
+              { query: MeDocument },
+              _result,
+              (result, query) => {
+                console.log(result);
+                if (result.logout) {
+                  return { me: null };
+                } else {
+                  return query;
                 }
               }
             );
