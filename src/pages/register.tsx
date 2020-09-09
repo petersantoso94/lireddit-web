@@ -4,12 +4,13 @@ import { Button, Box } from "@chakra-ui/core";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
 import { useRegisterMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/utils";
+import { toErrorMap, createUrqlClient } from "../utils/utils";
 import { useRouter } from "next/router";
+import { withUrqlClient } from "next-urql";
 
 interface Props {}
 
-export default function Register({}: Props): React.ReactElement {
+function Register({}: Props): React.ReactElement {
   const router = useRouter();
   const [, register] = useRegisterMutation();
   return (
@@ -54,3 +55,5 @@ export default function Register({}: Props): React.ReactElement {
     </Wrapper>
   );
 }
+
+export default withUrqlClient(createUrqlClient)(Register);

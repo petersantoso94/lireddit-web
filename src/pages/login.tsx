@@ -4,12 +4,13 @@ import { Button, Box } from "@chakra-ui/core";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
 import { useLoginMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/utils";
+import { toErrorMap, createUrqlClient } from "../utils/utils";
 import { useRouter } from "next/router";
+import { withUrqlClient } from "next-urql";
 
 interface Props {}
 
-export default function Login({}: Props): React.ReactElement {
+function Login({}: Props): React.ReactElement {
   const router = useRouter();
   const [, login] = useLoginMutation();
   return (
@@ -54,3 +55,6 @@ export default function Login({}: Props): React.ReactElement {
     </Wrapper>
   );
 }
+
+// dont need ssr here in login
+export default withUrqlClient(createUrqlClient)(Login);

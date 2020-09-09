@@ -37,7 +37,7 @@ function UpdateQuery<Result, Query>(
 export const createUrqlClient = (ssrExchange: SSRExchange) => ({
   url: graphqlUrl,
   fetchOptions: {
-    credentials: "include",
+    credentials: "include" as const,
   },
   exchanges: [
     dedupExchange,
