@@ -98,3 +98,5 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
     fetchExchange,
   ],
 });
+
+export const isInServer = () => typeof window === "undefined";

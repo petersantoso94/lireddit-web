@@ -2,17 +2,18 @@ import React, { ReactElement } from "react";
 import { Box, Link, Button, Flex } from "@chakra-ui/core";
 import NextLink from "next/link";
 import { useMeQuery, useLogoutMutation } from "../generated/graphql";
+import { isInServer } from "../utils/utils";
 
 interface Props {}
 
 export default function Navbar({}: Props): ReactElement {
-  const [{ data, fetching }] = useMeQuery();
+  const [{ data, fetching }] = useMeQuery({ pause: isInServer() });
   const [{ fetching: logoutFetching }, logoutMutation] = useLogoutMutation();
   let body = null;
   let logout = null;
   //fetching the data
   if (fetching) {
-  } else if (!data.me) {
+  } else if (!data || !data.me) {
     // user is not logged in
     body = (
       <>
