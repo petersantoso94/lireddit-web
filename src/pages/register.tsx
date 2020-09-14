@@ -16,9 +16,9 @@ function Register({}: Props): React.ReactElement {
   return (
     <Wrapper variant="regular">
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (value, { setErrors }) => {
-          const response = await register(value);
+          const response = await register({ options: value });
           if (response.data.register.errors) {
             setErrors(toErrorMap(response.data.register.errors));
           } else if (response.data.register.user) {
@@ -34,6 +34,7 @@ function Register({}: Props): React.ReactElement {
               placeholder="Username"
               label="Username"
             />
+            <InputField name="email" placeholder="Email" label="Email" />
             <InputField
               name="password"
               placeholder="Password"

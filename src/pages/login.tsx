@@ -16,7 +16,7 @@ function Login({}: Props): React.ReactElement {
   return (
     <Wrapper variant="regular">
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (value, { setErrors }) => {
           const response = await login(value);
           if (response.data.login.errors) {
@@ -30,9 +30,9 @@ function Login({}: Props): React.ReactElement {
         {({ isSubmitting }) => (
           <Form>
             <InputField
-              name="username"
-              placeholder="Username"
-              label="Username"
+              name="usernameOrEmail"
+              placeholder="Username or email"
+              label="Username or Email"
             />
             <InputField
               name="password"
