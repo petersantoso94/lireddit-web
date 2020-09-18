@@ -1,7 +1,7 @@
-import React, { ReactElement } from "react";
-import { Box, Link, Button, Flex } from "@chakra-ui/core";
+import { Button, Flex, Link } from "@chakra-ui/core";
 import NextLink from "next/link";
-import { useMeQuery, useLogoutMutation } from "../generated/graphql";
+import React, { ReactElement } from "react";
+import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isInServer } from "../utils/utils";
 
 interface Props {}

@@ -1,0 +1,4 @@
+fragment RegularError on CustomError {
+  message
+  field
+}
