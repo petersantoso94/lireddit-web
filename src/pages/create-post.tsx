@@ -11,7 +11,6 @@ import FormAlert, { AlertType } from "../components/FormAlert";
 const CreatePost = () => {
   const [, createPostMutation] = useCreatePostMutation();
   const [userNotAuthenticated, setuserNotAuthenticated] = useState("");
-  console.log("userNotAuthenticated", userNotAuthenticated);
   return (
     <Wrapper variant="small">
       {userNotAuthenticated && (

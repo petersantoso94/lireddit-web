@@ -82,7 +82,6 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
               { query: MeDocument },
               _result,
               (result, query) => {
-                console.log(result);
                 if (result.logout) {
                   return { me: null };
                 } else {
