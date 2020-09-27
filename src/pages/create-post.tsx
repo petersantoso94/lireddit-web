@@ -36,6 +36,7 @@ const CreatePost = () => {
           <Form>
             <InputField name="title" placeholder="Title" label="Title" />
             <InputField
+              isTextArea={true}
               name="content"
               placeholder="Post's content"
               label="Post's content"
