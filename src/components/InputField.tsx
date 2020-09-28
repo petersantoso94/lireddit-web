@@ -20,12 +20,12 @@ export default function InputField({
   isTextArea = false,
   ...props
 }: Props): ReactElement {
-  const C = isTextArea ? Textarea : Input;
+  const InputOrTextArea = isTextArea ? Textarea : Input;
   const [field, { error }] = useField(props);
   return (
     <FormControl isInvalid={!!error}>
       <FormLabel htmlFor={field.name}>{label}</FormLabel>
-      <C
+      <InputOrTextArea
         {...field}
         {...props}
         id={field.name}

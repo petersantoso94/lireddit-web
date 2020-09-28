@@ -143,7 +143,7 @@ export type RegularErrorFragment = (
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title'>
+  & Pick<Post, 'id' | 'title' | 'content' | 'point' | 'createdAt' | 'updatedAt'>
   & { user: (
     { __typename?: 'User' }
     & RegularUserFragment
@@ -277,6 +277,10 @@ export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
   id
   title
+  content
+  point
+  createdAt
+  updatedAt
   user {
     ...RegularUser
   }

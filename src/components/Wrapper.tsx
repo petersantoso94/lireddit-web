@@ -1,12 +1,12 @@
 import React, { ReactElement } from "react";
 import { Box } from "@chakra-ui/core";
 
-interface Props {
+export type TWrapper = {
   children;
   variant?: "small" | "regular";
-}
+};
 
-export default function Wrapper({ children, variant }: Props): ReactElement {
+export default function Wrapper({ children, variant }: TWrapper): ReactElement {
   return (
     <Box
       maxW={variant === "regular" ? "800px" : "400px"}
