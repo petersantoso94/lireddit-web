@@ -18,15 +18,21 @@ type Prop = {
   type: AlertType;
   header?: string;
   message: string;
+  closeAlert: () => void;
 };
 
-const FormAlert = ({ header, message, type }: Prop) => {
+const FormAlert = ({ header, message, type, closeAlert }: Prop) => {
   return (
     <Alert status={type}>
       <AlertIcon />
       {header && <AlertTitle mr={2}>{header}</AlertTitle>}
       <AlertDescription>{message}</AlertDescription>
-      <CloseButton position="absolute" right="8px" top="8px" />
+      <CloseButton
+        position="absolute"
+        right="8px"
+        top="8px"
+        onClick={closeAlert}
+      />
     </Alert>
   );
 };

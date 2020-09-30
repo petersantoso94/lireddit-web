@@ -1,20 +1,17 @@
+import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
+import { SSRExchange } from "next-urql";
+import Router from "next/router";
+import { dedupExchange, Exchange, fetchExchange } from "urql";
+import { pipe, tap } from "wonka";
+import { graphqlUrl } from "../Constants";
 import {
   CustomError,
   LoginMutation,
-  MeQuery,
-  MeDocument,
-  RegisterMutation,
   LogoutMutation,
+  MeDocument,
+  MeQuery,
+  RegisterMutation,
 } from "../generated/graphql";
-import { SSRExchange } from "next-urql";
-import { graphqlUrl } from "../Constants";
-import { dedupExchange, fetchExchange } from "urql";
-import {
-  QueryInput,
-  Cache,
-  query,
-  cacheExchange,
-} from "@urql/exchange-graphcache";
 
 export const toErrorMap = (errors: CustomError[]): Record<string, string> => {
   const errorMap: Record<string, string> = {};
@@ -33,6 +30,20 @@ function UpdateQuery<Result, Query>(
 ) {
   return cache.updateQuery(qi, (data) => fn(result, data as any) as any);
 }
+
+const errorExchange: Exchange = ({ forward }) => (ops$) => {
+  return pipe(
+    forward(ops$),
+    tap(({ error }) => {
+      // If the OperationResult has an error send a request to sentry
+      if (error != null && error.message.includes("Not Authenticated")) {
+        // the error is a CombinedError with networkError and graphqlErrors properties
+        // if it is not authenticated error, redirect to login page
+        Router.replace("/login");
+      }
+    })
+  );
+};
 
 export const createUrqlClient = (ssrExchange: SSRExchange) => ({
   url: graphqlUrl,
@@ -94,6 +105,7 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
       },
     }),
     ssrExchange,
+    errorExchange,
     fetchExchange,
   ],
 });

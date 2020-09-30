@@ -16,7 +16,11 @@ const CreatePost = () => {
   return (
     <BaseLayout variant="small">
       {userNotAuthenticated && (
-        <FormAlert message={userNotAuthenticated} type={AlertType.Error} />
+        <FormAlert
+          closeAlert={() => setuserNotAuthenticated("")}
+          message={userNotAuthenticated}
+          type={AlertType.Error}
+        />
       )}
       <Formik
         initialValues={{ title: "", content: "" }}
