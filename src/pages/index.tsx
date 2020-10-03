@@ -6,7 +6,7 @@ import BaseLayout from "../components/BaseLayout";
 import { PostWrapper } from "../components/PostWrapper";
 
 const Index = () => {
-  const [{ data }] = usePostsQuery();
+  const [{ data }] = usePostsQuery({ variables: { limit: 5 } });
 
   let postComponent = data && (
     <PostWrapper column={1} spacing={10} posts={data.posts as any} />
