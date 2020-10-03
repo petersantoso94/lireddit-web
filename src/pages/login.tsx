@@ -8,6 +8,7 @@ import { toErrorMap, createUrqlClient } from "../utils/utils";
 import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
+import { REDIRECT_TO } from "../Constants";
 
 interface Props {}
 
@@ -24,7 +25,8 @@ function Login({}: Props): React.ReactElement {
             setErrors(toErrorMap(response.data.login.errors));
           } else if (response.data.login.user) {
             // login success
-            router.push("/");
+            const redirect = router.query[REDIRECT_TO] as string;
+            router.push(redirect || "/");
           }
         }}
       >

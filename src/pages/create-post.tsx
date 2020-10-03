@@ -1,16 +1,19 @@
 import { Box, Button } from "@chakra-ui/core";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "../components/InputField";
 import BaseLayout from "../components/BaseLayout";
 import { createUrqlClient, toErrorMap } from "../utils/utils";
-import { useCreatePostMutation } from "../generated/graphql";
+import { useCreatePostMutation, useMeQuery } from "../generated/graphql";
 import FormAlert, { AlertType } from "../components/FormAlert";
 import { useRouter } from "next/router";
+import { useIsAuth } from "../utils/useIsAuth";
 
 const CreatePost = () => {
   const router = useRouter();
+  useIsAuth();
+
   const [, createPostMutation] = useCreatePostMutation();
   const [userNotAuthenticated, setuserNotAuthenticated] = useState("");
   return (
