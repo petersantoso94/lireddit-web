@@ -1,4 +1,4 @@
-import { Button, Flex, Link } from "@chakra-ui/core";
+import { Avatar, AvatarBadge, Button, Flex, Link } from "@chakra-ui/core";
 import NextLink from "next/link";
 import React, { ReactElement } from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
@@ -29,7 +29,12 @@ export default function Navbar({}: Props): ReactElement {
     );
   } else {
     //user is logged in
-    body = <label>{data.me.username}</label>;
+    body = (
+      <Flex align="center">
+        <Avatar mr={3} name={data.me.username} />
+        <label>{data.me.username}</label>
+      </Flex>
+    );
     logout = (
       <Button onClick={() => logoutMutation()} isLoading={logoutFetching}>
         Logout

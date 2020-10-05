@@ -1,7 +1,21 @@
-import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
+import {
+  Cache,
+  cacheExchange,
+  Data,
+  NullArray,
+  QueryInput,
+  ResolveInfo,
+  Resolver,
+  Variables,
+} from "@urql/exchange-graphcache";
 import { SSRExchange } from "next-urql";
 import Router from "next/router";
-import { dedupExchange, Exchange, fetchExchange } from "urql";
+import {
+  dedupExchange,
+  Exchange,
+  fetchExchange,
+  stringifyVariables,
+} from "urql";
 import { pipe, tap } from "wonka";
 import { graphqlUrl } from "../Constants";
 import {
@@ -45,6 +59,36 @@ const errorExchange: Exchange = ({ forward }) => (ops$) => {
   );
 };
 
+// pagination resolver for urql
+const cursorPagination = (): Resolver => {
+  return (
+    parent: Data,
+    fieldArgs: Variables,
+    cache: Cache,
+    info: ResolveInfo
+  ) => {
+    const { parentKey: entityKey, fieldName } = info;
+    const allFields = cache.inspectFields(entityKey);
+    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
+    const size = fieldInfos.length;
+    if (size === 0) {
+      return undefined;
+    }
+
+    // check if the data in the cache
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
+    const IsDataInCache = cache.resolveFieldByKey(entityKey, fieldKey);
+    info.partial = !IsDataInCache;
+    // because we will have multiple field, so need loop through
+    let result: NullArray<string> = [];
+    fieldInfos.forEach((fi) => {
+      const data = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string[];
+      result.push(...data);
+    });
+    return result;
+  };
+};
+
 export const createUrqlClient = (ssrExchange: SSRExchange) => ({
   url: graphqlUrl,
   fetchOptions: {
@@ -53,6 +97,11 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
   exchanges: [
     dedupExchange,
     cacheExchange({
+      resolvers: {
+        Query: {
+          posts: cursorPagination(),
+        },
+      },
       updates: {
         Mutation: {
           login: (_result, args, cache, info) => {
