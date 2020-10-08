@@ -15,13 +15,13 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
-  posts: Array<Post>;
+  getPosts: PaginatedPostResponse;
   post?: Maybe<Post>;
   me?: Maybe<User>;
 };
 
 
-export type QueryPostsArgs = {
+export type QueryGetPostsArgs = {
   cursor?: Maybe<Scalars['Float']>;
   limit: Scalars['Float'];
 };
@@ -29,6 +29,12 @@ export type QueryPostsArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['Int'];
+};
+
+export type PaginatedPostResponse = {
+  __typename?: 'PaginatedPostResponse';
+  hasMore: Scalars['Boolean'];
+  posts: Array<Post>;
 };
 
 export type Post = {
@@ -256,18 +262,22 @@ export type MeQuery = (
   )> }
 );
 
-export type PostsQueryVariables = Exact<{
+export type GetPostsQueryVariables = Exact<{
   cursor?: Maybe<Scalars['Float']>;
   limit: Scalars['Float'];
 }>;
 
 
-export type PostsQuery = (
+export type GetPostsQuery = (
   { __typename?: 'Query' }
-  & { posts: Array<(
-    { __typename?: 'Post' }
-    & RegularPostFragment
-  )> }
+  & { getPosts: (
+    { __typename?: 'PaginatedPostResponse' }
+    & Pick<PaginatedPostResponse, 'hasMore'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & RegularPostFragment
+    )> }
+  ) }
 );
 
 export const RegularErrorFragmentDoc = gql`
@@ -390,14 +400,17 @@ export const MeDocument = gql`
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
-export const PostsDocument = gql`
-    query Posts($cursor: Float, $limit: Float!) {
-  posts(limit: $limit, cursor: $cursor) {
-    ...RegularPost
+export const GetPostsDocument = gql`
+    query GetPosts($cursor: Float, $limit: Float!) {
+  getPosts(limit: $limit, cursor: $cursor) {
+    hasMore
+    posts {
+      ...RegularPost
+    }
   }
 }
     ${RegularPostFragmentDoc}`;
 
-export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
+export function useGetPostsQuery(options: Omit<Urql.UseQueryArgs<GetPostsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPostsQuery>({ query: GetPostsDocument, ...options });
 };

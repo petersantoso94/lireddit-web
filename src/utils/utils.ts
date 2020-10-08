@@ -77,15 +77,25 @@ const cursorPagination = (): Resolver => {
 
     // check if the data in the cache
     const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
-    const IsDataInCache = cache.resolveFieldByKey(entityKey, fieldKey);
+    const IsDataInCache = cache.resolve(
+      cache.resolveFieldByKey(entityKey, fieldKey) as string,
+      "posts"
+    );
     info.partial = !IsDataInCache;
     // because we will have multiple field, so need loop through
     let result: NullArray<string> = [];
+    let hasMore: boolean = true;
     fieldInfos.forEach((fi) => {
-      const data = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string[];
-      result.push(...data);
+      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string;
+      const posts = cache.resolve(key, "posts") as string[];
+      hasMore = cache.resolve(key, "hasMore") as boolean;
+      result.push(...posts);
     });
-    return result;
+    return {
+      __typename: "PaginatedPostResponse",
+      hasMore,
+      posts: result,
+    };
   };
 };
 
@@ -99,7 +109,7 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
     cacheExchange({
       resolvers: {
         Query: {
-          posts: cursorPagination(),
+          getPosts: cursorPagination(),
         },
       },
       updates: {
