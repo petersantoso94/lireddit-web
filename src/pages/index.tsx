@@ -4,16 +4,14 @@ import NextLink from "next/link";
 import React, { useState } from "react";
 import BaseLayout from "../components/BaseLayout";
 import { PostWrapper } from "../components/PostWrapper";
+import { DefaultVariables } from "../Constants";
 import { useGetPostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/utils";
 
 const Index = () => {
-  const [variables, setVariables] = useState({
-    limit: 10,
-    cursor: null as number | null,
-  });
+  const [variables, setVariables] = useState(DefaultVariables);
   const [{ data, fetching }] = useGetPostsQuery({ variables });
-  let postComponent = data.getPosts && (
+  let postComponent = data && data.getPosts && (
     <>
       <Flex align="center" mb={4}>
         <Heading>PiReddit - Beta</Heading>

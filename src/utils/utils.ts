@@ -14,12 +14,16 @@ import {
   dedupExchange,
   Exchange,
   fetchExchange,
+  Query,
   stringifyVariables,
 } from "urql";
 import { pipe, tap } from "wonka";
-import { graphqlUrl } from "../Constants";
+import { DefaultVariables, graphqlUrl } from "../Constants";
 import {
+  CreatePostMutation,
   CustomError,
+  GetPostsDocument,
+  GetPostsQuery,
   LoginMutation,
   LogoutMutation,
   MeDocument,
@@ -159,6 +163,10 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
                 }
               }
             );
+          },
+          createPost: (_result, args, cache, info) => {
+            cache.invalidate("Query", "getPosts", DefaultVariables);
+            console.log("end ", cache.inspectFields("Query"));
           },
         },
       },

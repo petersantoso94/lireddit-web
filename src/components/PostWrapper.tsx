@@ -28,8 +28,8 @@ export const PostWrapper = (prop: Prop) => {
     <Accordion allowToggle>
       <SimpleGrid columns={column} spacing={spacing}>
         {posts.map((x, idx) => (
-          <Flex w="100%">
-            <Box w="5%">
+          <Flex w="100%" key={"flex" + x.title + idx + x.createdAt}>
+            <Box w="5%" mr={4}>
               <Button
                 leftIcon={MdArrowUpward}
                 variantColor="red"

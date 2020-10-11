@@ -3,3 +3,9 @@ export const graphqlUrl =
 
 export const REDIRECT_TO = "redirectTo";
 export const QUERY_TOKEN = "token";
+
+// post invalidate const
+export const DefaultVariables = {
+  limit: 10,
+  cursor: undefined as number | undefined,
+};
