@@ -8,6 +8,8 @@ import {
   Button,
   Flex,
   Grid,
+  Icon,
+  IconButton,
   SimpleGrid,
   Text,
 } from "@chakra-ui/core";
@@ -15,6 +17,7 @@ import moment from "moment";
 import React from "react";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import { Post } from "../generated/graphql";
+import { UpDownVote } from "./UpDownVote";
 
 type Prop = {
   posts: Post[];
@@ -28,30 +31,8 @@ export const PostWrapper = (prop: Prop) => {
     <Accordion allowToggle>
       <SimpleGrid columns={column} spacing={spacing}>
         {posts.map((x, idx) => (
-          <Flex w="100%" key={"flex" + x.title + idx + x.createdAt}>
-            <Box w="5%" mr={4}>
-              <Button
-                leftIcon={MdArrowUpward}
-                variantColor="red"
-                variant="outline"
-                pr={-2}
-                onClick={() => {}}
-              >
-                {}
-              </Button>
-              <Text textAlign="center">
-                <strong>{x.point}</strong>
-              </Text>
-              <Button
-                leftIcon={MdArrowDownward}
-                variantColor="red"
-                variant="outline"
-                pr={-2}
-                onClick={() => {}}
-              >
-                {}
-              </Button>
-            </Box>
+          <Flex key={"flex" + x.title + idx + x.createdAt}>
+            <UpDownVote post={x} />
             <Box w="100%">
               <AccordionItem key={x.title + idx + x.createdAt}>
                 <AccordionHeader>

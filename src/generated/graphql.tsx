@@ -41,6 +41,7 @@ export type Post = {
   __typename?: 'Post';
   id: Scalars['Float'];
   user: User;
+  vote: Vote;
   title: Scalars['String'];
   content: Scalars['String'];
   point: Scalars['Float'];
@@ -52,15 +53,24 @@ export type User = {
   __typename?: 'User';
   id: Scalars['Float'];
   post: Post;
+  vote: Vote;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   username: Scalars['String'];
   email: Scalars['String'];
 };
 
+export type Vote = {
+  __typename?: 'Vote';
+  user: User;
+  post: Post;
+  up: Scalars['Boolean'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: PostResponse;
+  vote: Scalars['Boolean'];
   updatePost: Post;
   deletePost: Scalars['Boolean'];
   changePassword: UserResponse;
@@ -73,6 +83,12 @@ export type Mutation = {
 
 export type MutationCreatePostArgs = {
   option: PostInput;
+};
+
+
+export type MutationVoteArgs = {
+  isUpvote: Scalars['Boolean'];
+  postId: Scalars['Float'];
 };
 
 
@@ -251,6 +267,17 @@ export type RegisterMutation = (
   ) }
 );
 
+export type VotingMutationVariables = Exact<{
+  isUpvote: Scalars['Boolean'];
+  postId: Scalars['Float'];
+}>;
+
+
+export type VotingMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'vote'>
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -388,6 +415,15 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const VotingDocument = gql`
+    mutation Voting($isUpvote: Boolean!, $postId: Float!) {
+  vote(isUpvote: $isUpvote, postId: $postId)
+}
+    `;
+
+export function useVotingMutation() {
+  return Urql.useMutation<VotingMutation, VotingMutationVariables>(VotingDocument);
 };
 export const MeDocument = gql`
     query Me {

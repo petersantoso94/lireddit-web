@@ -1,0 +1,3 @@
+mutation Voting($isUpvote: Boolean!, $postId: Float!) {
+  vote(isUpvote: $isUpvote, postId: $postId)
+}

@@ -103,6 +103,15 @@ const cursorPagination = (): Resolver => {
   };
 };
 
+const invalidateGetPostQuery = (_result, args, cache, info) => {
+  // invalidate each query in pagination
+  const allFields = cache.inspectFields("Query");
+  const fieldInfos = allFields.filter((info) => info.fieldName === "getPosts");
+  fieldInfos.forEach((fi) => {
+    cache.invalidate("Query", "getPosts", fi.arguments || {});
+  });
+};
+
 export const createUrqlClient = (ssrExchange: SSRExchange) => ({
   url: graphqlUrl,
   fetchOptions: {
@@ -164,9 +173,8 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
               }
             );
           },
-          createPost: (_result, args, cache, info) => {
-            cache.invalidate("Query", "getPosts", DefaultVariables);
-          },
+          createPost: invalidateGetPostQuery,
+          vote: invalidateGetPostQuery,
         },
       },
     }),
