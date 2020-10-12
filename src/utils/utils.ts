@@ -110,6 +110,8 @@ const invalidateGetPostQuery = (_result, args, cache, info) => {
   fieldInfos.forEach((fi) => {
     cache.invalidate("Query", "getPosts", fi.arguments || {});
   });
+
+  cache.invalidate("Query", "getVotes");
 };
 
 export const createUrqlClient = (ssrExchange: SSRExchange) => ({

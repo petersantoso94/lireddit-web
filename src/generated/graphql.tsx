@@ -17,6 +17,7 @@ export type Query = {
   hello: Scalars['String'];
   getPosts: PaginatedPostResponse;
   post?: Maybe<Post>;
+  getVotes?: Maybe<Array<Vote>>;
   me?: Maybe<User>;
 };
 
@@ -62,6 +63,7 @@ export type User = {
 
 export type Vote = {
   __typename?: 'Vote';
+  voteId: Scalars['Float'];
   user: User;
   post: Post;
   up: Scalars['Boolean'];
@@ -181,6 +183,15 @@ export type RegularPostFragment = (
 export type RegularUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username'>
+);
+
+export type RegularVoteFragment = (
+  { __typename?: 'Vote' }
+  & Pick<Vote, 'voteId' | 'up'>
+  & { post: (
+    { __typename?: 'Post' }
+    & Pick<Post, 'id' | 'title'>
+  ) }
 );
 
 export type UserResponseFragment = (
@@ -307,6 +318,17 @@ export type GetPostsQuery = (
   ) }
 );
 
+export type GetVotesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetVotesQuery = (
+  { __typename?: 'Query' }
+  & { getVotes?: Maybe<Array<(
+    { __typename?: 'Vote' }
+    & RegularVoteFragment
+  )>> }
+);
+
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on CustomError {
   message
@@ -343,6 +365,16 @@ export const CreatePostResponseFragmentDoc = gql`
 }
     ${RegularErrorFragmentDoc}
 ${RegularPostFragmentDoc}`;
+export const RegularVoteFragmentDoc = gql`
+    fragment RegularVote on Vote {
+  voteId
+  up
+  post {
+    id
+    title
+  }
+}
+    `;
 export const UserResponseFragmentDoc = gql`
     fragment UserResponse on UserResponse {
   errors {
@@ -449,4 +481,15 @@ export const GetPostsDocument = gql`
 
 export function useGetPostsQuery(options: Omit<Urql.UseQueryArgs<GetPostsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetPostsQuery>({ query: GetPostsDocument, ...options });
+};
+export const GetVotesDocument = gql`
+    query GetVotes {
+  getVotes {
+    ...RegularVote
+  }
+}
+    ${RegularVoteFragmentDoc}`;
+
+export function useGetVotesQuery(options: Omit<Urql.UseQueryArgs<GetVotesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetVotesQuery>({ query: GetVotesDocument, ...options });
 };

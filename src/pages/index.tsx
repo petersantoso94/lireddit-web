@@ -5,13 +5,16 @@ import React, { useState } from "react";
 import BaseLayout from "../components/BaseLayout";
 import { PostWrapper } from "../components/PostWrapper";
 import { DefaultVariables } from "../Constants";
-import { useGetPostsQuery } from "../generated/graphql";
-import { createUrqlClient } from "../utils/utils";
+import { useGetPostsQuery, useGetVotesQuery } from "../generated/graphql";
+import { createUrqlClient, isInServer } from "../utils/utils";
 
 const Index = () => {
   const [variables, setVariables] = useState(DefaultVariables);
   const [{ data, fetching }] = useGetPostsQuery({ variables });
-  let postComponent = data && data.getPosts && (
+  const [{ data: votesData }] = useGetVotesQuery({
+    pause: isInServer(),
+  });
+  let postComponent = data && votesData && data.getPosts && votesData.getVotes && (
     <>
       <Flex align="center" mb={4}>
         <Heading>PiReddit - Beta</Heading>
@@ -19,7 +22,12 @@ const Index = () => {
           <Link ml="auto">Create Post</Link>
         </NextLink>
       </Flex>
-      <PostWrapper column={1} spacing={10} posts={data.getPosts.posts as any} />
+      <PostWrapper
+        column={1}
+        spacing={10}
+        posts={data.getPosts.posts as any}
+        votesData={votesData.getVotes as any}
+      />
       <Flex>
         {data.getPosts.hasMore && (
           <Button

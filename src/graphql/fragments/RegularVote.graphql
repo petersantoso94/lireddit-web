@@ -1,0 +1,8 @@
+fragment RegularVote on Vote {
+  voteId
+  up
+  post {
+    id
+    title
+  }
+}
