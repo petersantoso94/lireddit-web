@@ -1,4 +1,11 @@
-import { Avatar, AvatarBadge, Button, Flex, Link } from "@chakra-ui/core";
+import {
+  Avatar,
+  AvatarBadge,
+  Button,
+  Flex,
+  Link,
+  theme,
+} from "@chakra-ui/core";
 import NextLink from "next/link";
 import React, { ReactElement } from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
@@ -42,7 +49,12 @@ export default function Navbar({}: Props): ReactElement {
     );
   }
   return (
-    <Flex flexDirection="row" justifyContent="space-between" bg="tan" p={4}>
+    <Flex
+      flexDirection="row"
+      justifyContent="space-between"
+      bg={theme.colors.teal[400]}
+      p={4}
+    >
       {body}
       {logout}
     </Flex>

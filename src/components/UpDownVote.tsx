@@ -27,6 +27,7 @@ export const UpDownVote = ({ post, votesData }: Prop) => {
         aria-label="upvote post"
         icon="chevron-up"
         isActive={buttonActive === "upvote"}
+        variantColor="teal"
         onClick={async () => {
           setLoadingState("upvote-loading");
           await vote({
@@ -43,6 +44,7 @@ export const UpDownVote = ({ post, votesData }: Prop) => {
       <IconButton
         aria-label="down vote post"
         icon="chevron-down"
+        variantColor="teal"
         isActive={buttonActive === "downvote"}
         isLoading={loadingState === "downvote-loading"}
         onClick={async () => {
