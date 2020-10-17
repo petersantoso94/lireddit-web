@@ -72,7 +72,7 @@ export type Vote = {
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: PostResponse;
-  vote: Scalars['Boolean'];
+  vote: VotingResponse;
   updatePost: Post;
   deletePost: Scalars['Boolean'];
   changePassword: UserResponse;
@@ -141,6 +141,12 @@ export type CustomError = {
 export type PostInput = {
   title: Scalars['String'];
   content: Scalars['String'];
+};
+
+export type VotingResponse = {
+  __typename?: 'VotingResponse';
+  isSuccess: Scalars['Boolean'];
+  newPoint?: Maybe<Scalars['Float']>;
 };
 
 export type UserResponse = {
@@ -286,7 +292,10 @@ export type VotingMutationVariables = Exact<{
 
 export type VotingMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'vote'>
+  & { vote: (
+    { __typename?: 'VotingResponse' }
+    & Pick<VotingResponse, 'isSuccess' | 'newPoint'>
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -297,6 +306,19 @@ export type MeQuery = (
   & { me?: Maybe<(
     { __typename?: 'User' }
     & RegularUserFragment
+  )> }
+);
+
+export type PostQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type PostQuery = (
+  { __typename?: 'Query' }
+  & { post?: Maybe<(
+    { __typename?: 'Post' }
+    & RegularPostFragment
   )> }
 );
 
@@ -450,7 +472,10 @@ export function useRegisterMutation() {
 };
 export const VotingDocument = gql`
     mutation Voting($isUpvote: Boolean!, $postId: Float!) {
-  vote(isUpvote: $isUpvote, postId: $postId)
+  vote(isUpvote: $isUpvote, postId: $postId) {
+    isSuccess
+    newPoint
+  }
 }
     `;
 
@@ -467,6 +492,17 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const PostDocument = gql`
+    query Post($id: Int!) {
+  post(id: $id) {
+    ...RegularPost
+  }
+}
+    ${RegularPostFragmentDoc}`;
+
+export function usePostQuery(options: Omit<Urql.UseQueryArgs<PostQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<PostQuery>({ query: PostDocument, ...options });
 };
 export const GetPostsDocument = gql`
     query GetPosts($cursor: Float, $limit: Float!) {

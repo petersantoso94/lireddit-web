@@ -32,7 +32,7 @@ export const PostWrapper = (prop: Prop) => {
     <Accordion allowToggle>
       <SimpleGrid columns={column} spacing={spacing}>
         {posts.map((x, idx) => {
-          const vote = votesData.find((y) => y.post.id === x.id);
+          const vote = votesData && votesData.find((y) => y.post.id === x.id);
           return (
             <Flex key={"flex" + x.title + idx + x.createdAt}>
               <UpDownVote

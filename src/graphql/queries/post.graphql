@@ -1,8 +1,5 @@
-query GetPosts($cursor: Float, $limit: Float!) {
-  getPosts(limit: $limit, cursor: $cursor) {
-    hasMore
-    posts {
-      ...RegularPost
-    }
+query Post($id: Int!) {
+  post(id: $id) {
+    ...RegularPost
   }
 }

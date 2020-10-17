@@ -1,3 +1,6 @@
 mutation Voting($isUpvote: Boolean!, $postId: Float!) {
-  vote(isUpvote: $isUpvote, postId: $postId)
+  vote(isUpvote: $isUpvote, postId: $postId) {
+    isSuccess
+    newPoint
+  }
 }

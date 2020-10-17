@@ -8,29 +8,26 @@ import {
   Resolver,
   Variables,
 } from "@urql/exchange-graphcache";
+import gql from "graphql-tag";
 import { SSRExchange } from "next-urql";
 import Router from "next/router";
 import {
   dedupExchange,
   Exchange,
   fetchExchange,
-  Query,
   stringifyVariables,
 } from "urql";
 import { pipe, tap } from "wonka";
-import { DefaultVariables, graphqlUrl } from "../Constants";
+import { graphqlUrl } from "../Constants";
 import {
-  CreatePostMutation,
   CustomError,
   GetPostsDocument,
-  GetPostsQuery,
   LoginMutation,
   LogoutMutation,
   MeDocument,
   MeQuery,
   RegisterMutation,
 } from "../generated/graphql";
-
 export const toErrorMap = (errors: CustomError[]): Record<string, string> => {
   const errorMap: Record<string, string> = {};
   errors.forEach(({ field, message }) => {
@@ -103,17 +100,6 @@ const cursorPagination = (): Resolver => {
   };
 };
 
-const invalidateGetPostQuery = (_result, args, cache, info) => {
-  // invalidate each query in pagination
-  const allFields = cache.inspectFields("Query");
-  const fieldInfos = allFields.filter((info) => info.fieldName === "getPosts");
-  fieldInfos.forEach((fi) => {
-    cache.invalidate("Query", "getPosts", fi.arguments || {});
-  });
-
-  cache.invalidate("Query", "getVotes");
-};
-
 export const createUrqlClient = (ssrExchange: SSRExchange) => ({
   url: graphqlUrl,
   fetchOptions: {
@@ -175,8 +161,47 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
               }
             );
           },
-          createPost: invalidateGetPostQuery,
-          vote: invalidateGetPostQuery,
+          createPost: (result: any, _args, cache, _info) => {
+            const newPost = result.createPost.post;
+            cache.updateQuery(
+              { query: GetPostsDocument, variables: { limit: 10 } },
+              (data: any) => {
+                if (data !== null) {
+                  // add the post to the begining of the result
+                  data.getPosts.posts.unshift(newPost);
+                  return data;
+                } else {
+                  return null;
+                }
+              }
+            );
+          },
+          vote: (_result: any, args, cache, info) => {
+            const selectedPostId = args.postId;
+            const data = cache.readFragment(
+              gql`
+                fragment _ on Post {
+                  id
+                  point
+                }
+              `,
+              {
+                id: selectedPostId,
+              } as any
+            );
+            if (data) {
+              const newPoints = _result.vote.newPoint;
+              cache.writeFragment(
+                gql`
+                  fragment __ on Post {
+                    point
+                  }
+                `,
+                { id: selectedPostId, point: newPoints } as any
+              );
+            }
+            cache.invalidate("Query", "getVotes");
+          },
         },
       },
     }),

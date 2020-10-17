@@ -14,7 +14,7 @@ const Index = () => {
   const [{ data: votesData }] = useGetVotesQuery({
     pause: isInServer(),
   });
-  let postComponent = data && votesData && data.getPosts && votesData.getVotes && (
+  let postComponent = data && data.getPosts && (
     <>
       <Flex align="center" mb={4}>
         <Heading>PiReddit - Beta</Heading>
@@ -26,7 +26,7 @@ const Index = () => {
         column={1}
         spacing={10}
         posts={data.getPosts.posts as any}
-        votesData={votesData.getVotes as any}
+        votesData={votesData && (votesData.getVotes as any)}
       />
       <Flex>
         {data.getPosts.hasMore && (
