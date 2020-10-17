@@ -130,6 +130,7 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
                 }
               }
             );
+            cache.invalidate("Query", "getVotes");
           },
           register: (_result, args, cache, info) => {
             UpdateQuery<RegisterMutation, MeQuery>(
@@ -146,6 +147,7 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
                 }
               }
             );
+            cache.invalidate("Query", "getVotes");
           },
           logout: (_result, args, cache, info) => {
             UpdateQuery<LogoutMutation, MeQuery>(
@@ -160,6 +162,7 @@ export const createUrqlClient = (ssrExchange: SSRExchange) => ({
                 }
               }
             );
+            cache.invalidate("Query", "getVotes");
           },
           createPost: (result: any, _args, cache, _info) => {
             const newPost = result.createPost.post;
