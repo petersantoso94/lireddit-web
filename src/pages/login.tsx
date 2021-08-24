@@ -33,11 +33,13 @@ function Login({}: Props): React.ReactElement {
         {({ isSubmitting }) => (
           <Form>
             <InputField
+              color="black"
               name="usernameOrEmail"
               placeholder="Username or email"
               label="Username or Email"
             />
             <InputField
+              color="black"
               name="password"
               placeholder="Password"
               label="Password"

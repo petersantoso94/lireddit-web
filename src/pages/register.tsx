@@ -30,12 +30,15 @@ function Register({}: Props): React.ReactElement {
         {({ isSubmitting }) => (
           <Form>
             <InputField
+              color="black"
               name="username"
               placeholder="Username"
               label="Username"
             />
-            <InputField name="email" placeholder="Email" label="Email" />
             <InputField
+              color="black" name="email" placeholder="Email" label="Email" />
+            <InputField
+              color="black"
               name="password"
               placeholder="Password"
               label="Password"
